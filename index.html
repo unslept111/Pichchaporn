@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pichchaporn</title>
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+        background: black;
+    }
+    canvas {
+        display: block;
+    }
+</style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<audio autoplay loop>
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+let text = "pichchaporn";
+
+ctx.fillStyle = "white";
+ctx.font = "bold 120px Arial";
+ctx.textAlign = "center";
+ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+
+let textData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+for (let y = 0; y < canvas.height; y += 6) {
+    for (let x = 0; x < canvas.width; x += 6) {
+        let index = (y * canvas.width + x) * 4;
+        if (textData.data[index + 3] > 128) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                targetX: x,
+                targetY: y,
+                size: 4
+            });
+        }
+    }
+}
+
+function drawHeart(x, y, size) {
+    ctx.fillStyle = "pink";
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.bezierCurveTo(x - size, y - size, x - size * 2, y + size / 2, x, y + size * 2);
+    ctx.bezierCurveTo(x + size * 2, y + size / 2, x + size, y - size, x, y);
+    ctx.fill();
+}
+
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+        p.x += (p.targetX - p.x) * 0.05;
+        p.y += (p.targetY - p.y) * 0.05;
+        drawHeart(p.x, p.y, 3);
+    });
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+</script>
+
+</body>
+</html>
