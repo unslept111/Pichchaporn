@@ -1,15 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Pichchaporn ❤️</title>
+<title>Love You</title>
 <style>
-body{
-    margin:0;
-    background:black;
-    overflow:hidden;
-}
-canvas{ display:block; }
+    body{
+        margin:0;
+        background:black;
+        overflow:hidden;
+        font-family: monospace;
+    }
+
+    canvas{
+        display:block;
+    }
 </style>
 </head>
 <body>
@@ -20,66 +24,43 @@ canvas{ display:block; }
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-function resize(){
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener("resize", resize);
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-let text = " pichchaporn ";
-let progress = 0;
+const text = "love you pichchaporn ";
+const fontSize = 18;
 
-function heart(t){
-    let x = 16 * Math.pow(Math.sin(t),3);
-    let y = -(13*Math.cos(t)
-            -5*Math.cos(2*t)
-            -2*Math.cos(3*t)
-            -Math.cos(4*t));
-    return {x:x, y:y};
+let angle = 0;
+
+function heart(t) {
+    const x = 16 * Math.pow(Math.sin(t), 3);
+    const y = 13 * Math.cos(t)
+              - 5 * Math.cos(2 * t)
+              - 2 * Math.cos(3 * t)
+              - Math.cos(4 * t);
+    return { x, y };
 }
 
-function draw(){
+function draw() {
+    ctx.fillStyle = "rgba(0,0,0,0.1)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.save();
-    ctx.translate(canvas.width/2, canvas.height/2);
+    ctx.fillStyle = "#ff4da6";
+    ctx.font = fontSize + "px monospace";
 
-    ctx.fillStyle = "#ff1a1a";
-    ctx.font = "bold 22px Arial";
-    ctx.shadowColor = "#ff0000";
-    ctx.shadowBlur = 18;
+    let i = 0;
 
-    let layers = 5;
-    let scaleBase = 18;
+    for (let t = 0; t < Math.PI * 2; t += 0.02) {
+        const pos = heart(t + angle);
 
-    for(let layer=0; layer<layers; layer++){
+        const x = canvas.width / 2 + pos.x * 20;
+        const y = canvas.height / 2 - pos.y * 20;
 
-        let scale = scaleBase + layer*3;
-        let tOffset = progress*0.002 + layer*0.05;
-
-        for(let t=0; t<Math.PI*2; t+=0.15){
-
-            let p = heart(t + tOffset);
-            let next = heart(t + tOffset + 0.01);
-
-            ctx.save();
-            ctx.translate(p.x*scale, p.y*scale);
-
-            let angle = Math.atan2(
-                (next.y - p.y),
-                (next.x - p.x)
-            );
-            ctx.rotate(angle);
-
-            ctx.fillText(text,0,0);
-
-            ctx.restore();
-        }
+        ctx.fillText(text[i % text.length], x, y);
+        i++;
     }
 
-    ctx.restore();
-    progress += 1;
+    angle += 0.02;
     requestAnimationFrame(draw);
 }
 
