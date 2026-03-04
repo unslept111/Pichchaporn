@@ -1,26 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Pichchaporn</title>
+<title>Pichchaporn Love</title>
 <style>
-    body {
-        margin: 0;
-        overflow: hidden;
-        background: black;
-    }
-    canvas {
-        display: block;
-    }
+body{
+    margin:0;
+    background:black;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+canvas{
+    display:block;
+}
 </style>
 </head>
 <body>
 
 <canvas id="canvas"></canvas>
-
-<audio autoplay loop>
-    <source src="music.mp3" type="audio/mpeg">
-</audio>
 
 <script>
 const canvas = document.getElementById("canvas");
@@ -29,57 +29,45 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-let particles = [];
-let text = "pichchaporn";
+let angle = 0;
+let text = "pichchaporn ";
 
-ctx.fillStyle = "white";
-ctx.font = "bold 120px Arial";
-ctx.textAlign = "center";
-ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+function drawHeartText(){
 
-let textData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
 
-for (let y = 0; y < canvas.height; y += 6) {
-    for (let x = 0; x < canvas.width; x += 6) {
-        let index = (y * canvas.width + x) * 4;
-        if (textData.data[index + 3] > 128) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                targetX: x,
-                targetY: y,
-                size: 4
-            });
-        }
+    ctx.save();
+    ctx.translate(canvas.width/2, canvas.height/2);
+    ctx.rotate(angle);
+
+    ctx.fillStyle = "red";
+    ctx.font = "20px Arial";
+    ctx.shadowColor = "red";
+    ctx.shadowBlur = 10;
+
+    for(let t = 0; t < Math.PI * 2; t += 0.05){
+
+        let x = 16 * Math.pow(Math.sin(t),3);
+        let y = -(13*Math.cos(t) - 5*Math.cos(2*t)
+                -2*Math.cos(3*t) - Math.cos(4*t));
+
+        x *= 20;
+        y *= 20;
+
+        ctx.save();
+        ctx.translate(x,y);
+        ctx.rotate(Math.atan2(y,x));
+        ctx.fillText(text,0,0);
+        ctx.restore();
     }
+
+    ctx.restore();
+
+    angle += 0.01;
+    requestAnimationFrame(drawHeartText);
 }
 
-function drawHeart(x, y, size) {
-    ctx.fillStyle = "pink";
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.bezierCurveTo(x - size, y - size, x - size * 2, y + size / 2, x, y + size * 2);
-    ctx.bezierCurveTo(x + size * 2, y + size / 2, x + size, y - size, x, y);
-    ctx.fill();
-}
-
-function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => {
-        p.x += (p.targetX - p.x) * 0.05;
-        p.y += (p.targetY - p.y) * 0.05;
-        drawHeart(p.x, p.y, 3);
-    });
-    requestAnimationFrame(animate);
-}
-
-animate();
-
-window.addEventListener("resize", () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-});
+drawHeartText();
 </script>
 
 </body>
