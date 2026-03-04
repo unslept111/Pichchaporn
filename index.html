@@ -30,14 +30,14 @@ const phrase = "love you pichchaporn";
 let points = [];
 let time = 0;
 
-// สร้างจุดหัวใจ
-for(let t = 0; t < Math.PI * 2; t += 0.28){
+// สร้างจุดหัวใจครั้งเดียว
+for(let t = 0; t < Math.PI * 2; t += 0.30){
     const x = 16 * Math.pow(Math.sin(t),3);
     const y = 13*Math.cos(t)
             - 5*Math.cos(2*t)
             - 2*Math.cos(3*t)
             - Math.cos(4*t);
-    points.push({x,y,index:t});
+    points.push({x,y});
 }
 
 function draw(){
@@ -48,18 +48,22 @@ function draw(){
     ctx.shadowColor="#ff4da6";
     ctx.shadowBlur=15;
 
-    points.forEach((p,i)=>{
+    // ✅ วงกลม (แต่ไม่หมุนหัวใจ)
+    const radius = 40;
 
-        // ทำคลื่นขึ้นลงไล่ตามตำแหน่ง
-        const wave = Math.sin(time + i * 0.5) * 15;
+    // ทำให้เริ่มจากล่างขวา
+    const circleX = Math.cos(time) * radius;
+    const circleY = Math.sin(time) * radius;
 
-        const x = canvas.width/2 + p.x * 18;
-        const y = canvas.height/2 - p.y * 18 + wave;
+    points.forEach(p=>{
+
+        const x = canvas.width/2 + p.x*18 + circleX;
+        const y = canvas.height/2 - p.y*18 + circleY;
 
         ctx.fillText(phrase, x, y);
     });
 
-    time += 0.05;
+    time += 0.03;
     requestAnimationFrame(draw);
 }
 
