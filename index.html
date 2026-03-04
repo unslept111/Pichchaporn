@@ -15,7 +15,11 @@ canvas{
 </style>
 </head>
 <body>
-
+  
+<audio id="bgm" loop>
+  <source src="snaptik_7603026950604524818_v3.mp4" type="audio/mp4">
+</audio>
+  
 <canvas id="c"></canvas>
 
 <script>
@@ -86,6 +90,11 @@ function draw(){
 }
 
 draw();
+const audio = document.getElementById("bgm");
+
+document.body.addEventListener("click", function () {
+    audio.play();
+}, { once: true });
 </script>
 
 </body>
